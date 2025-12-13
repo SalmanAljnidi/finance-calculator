@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حاسبة التمويل</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {--main:#0f766e;--bg:#f0fdfa;--card:#fff;--text:#0f172a;--muted:#64748b;--danger:#dc2626;}
 *{box-sizing:border-box;font-family:"Tajawal",system-ui,sans-serif;}
@@ -59,6 +60,7 @@ button{margin-top:20px;width:100%;padding:14px;border:none;border-radius:14px;ba
 <div class="result"><span>أعلى مبلغ تمويل مسموح به شامل الأرباح:</span><strong id="maxTotalWithProfit"></strong></div>
 <div class="result"><span>قسط أعلى مبلغ ممكن:</span><strong id="maxMonthly"></strong></div>
 </div>
+<button onclick="downloadPDF()">تحميل النتائج كملف PDF</button>
 <div class="note">تنويه: هذه الحسبة تقديرية وتحتمل الصواب والخطأ، وقد تختلف القيم الفعلية حسب شروط جهة التمويل.</div>
 </div>
 <script>
@@ -77,11 +79,7 @@ const maxDeduction=salary*ratio;
 const availableInstallment=maxDeduction-commitments;
 if(availableInstallment<=0){alertBox.textContent='لا يوجد قسط متاح للتمويل حسب البيانات المدخلة';alertBox.style.display='block';resultsBox.style.display='none';return;}
 const maxAmount=(availableInstallment*months)/(1+rate*years);
-if(amount>maxAmount){
-alertBox.textContent='⚠️ مبلغ التمويل المدخل أعلى من الحد المسموح وتم تعديله تلقائياً';
-alertBox.style.display='block';
-amount=maxAmount;
-}
+if(amount>maxAmount){alertBox.textContent='⚠️ مبلغ التمويل المدخل أعلى من الحد المسموح وتم تعديله تلقائياً';alertBox.style.display='block';amount=maxAmount;}
 const totalProfit=amount*rate*years;
 const totalAmount=amount+totalProfit;
 const monthly=totalAmount/months;
@@ -96,6 +94,26 @@ maxAmountEl.textContent=format(maxAmount);
 maxTotalWithProfitEl.textContent=format(maxTotalWithProfit);
 maxMonthlyEl.textContent=format(maxMonthly);
 resultsBox.style.display='grid';
+}
+function downloadPDF(){
+const {{ jsPDF }} = window.jspdf;
+const doc = new jsPDF({orientation:'portrait'});
+const today = new Date().toLocaleDateString('ar-SA');
+doc.setFontSize(18);
+doc.text('تقرير التمويل',105,20,{align:'center'});
+doc.setFontSize(12);
+doc.text('تاريخ التصدير: '+today,105,28,{align:'center'});
+doc.setFontSize(14);
+doc.text('النتائج:',20,40);
+doc.setFontSize(12);
+doc.text('مبلغ التمويل الصافي (قبل الأرباح): '+netAmountEl.textContent,20,50);
+doc.text('مبلغ ربح التمويل: '+profitAmountEl.textContent,20,58);
+doc.text('القسط الشهري: '+monthlyEl.textContent,20,66);
+doc.text('إجمالي مبلغ التمويل مع الأرباح: '+totalEl.textContent,20,74);
+doc.text('أعلى مبلغ تمويل ممكن (صافي قبل الأرباح): '+maxAmountEl.textContent,20,82);
+doc.text('أعلى مبلغ تمويل مسموح به شامل الأرباح: '+maxTotalWithProfitEl.textContent,20,90);
+doc.text('قسط أعلى مبلغ ممكن: '+maxMonthlyEl.textContent,20,98);
+doc.save('Finance_Report.pdf');
 }
 const salaryInput=document.getElementById('salary');
 const commitmentsInput=document.getElementById('commitments');
