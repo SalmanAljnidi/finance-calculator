@@ -21,7 +21,7 @@
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
     .field { display:flex; flex-direction:column; gap:6px; }
     label { font-size:14px; color:var(--muted); }
-    input { padding:12px 14px; border-radius:12px; border:1px solid #e5e7eb; font-size:16px; }
+    input { padding:12px 14px; border-radius:12px; border:1px solid #e5e7eb; font-size:16px; width:100%; }
     input:focus { outline:none; border-color:var(--main); }
     .ratios { grid-column:span 2; display:flex; flex-wrap:wrap; gap:12px; margin-top:8px; flex-direction:column; }
     .ratios .hint { font-size:13px; color:var(--muted); margin-bottom:4px; }
@@ -32,10 +32,15 @@
     .ratio input:checked + label { background:var(--main); color:#fff; border-color:var(--main); }
     button { margin-top:20px; width:100%; padding:14px; border:none; border-radius:14px; background:var(--main); color:#fff; font-size:18px; cursor:pointer; }
     .results { margin-top:24px; background:var(--bg); border-radius:16px; padding:16px; display:none; gap:10px; }
-    .result { display:flex; justify-content:space-between; font-size:15px; }
+    .result { display:flex; justify-content:space-between; font-size:15px; flex-wrap:wrap; }
     .alert { margin-top:16px; background:#fee2e2; color:var(--danger); padding:12px; border-radius:12px; font-weight:500; display:none; }
     .note { margin-top:24px; font-size:13px; color:var(--muted); text-align:center; }
-    @media(max-width:600px){.grid{grid-template-columns:1fr;}.ratio-options{flex-direction:column;}}
+
+    @media(max-width:600px){
+      .grid { grid-template-columns:1fr; gap:12px; }
+      .ratio-options { flex-direction:column; gap:8px; }
+      .container { padding:16px; }
+    }
   </style>
 </head>
 <body>
