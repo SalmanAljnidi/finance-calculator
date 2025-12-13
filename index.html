@@ -1,136 +1,130 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>حاسبة التمويل</title>
-<style>
-:root {
-  --main:#0f766e;
-  --bg:#f0fdfa;
-  --card:#ffffff;
-  --text:#0f172a;
-  --muted:#64748b;
-  --danger:#dc2626;
-}
-*{box-sizing:border-box;font-family:"Tajawal",system-ui,sans-serif;}
-body{margin:0;background:linear-gradient(135deg,#ccfbf1,#f0fdfa);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;color:var(--text);}
-.container{width:100%;max-width:720px;background:var(--card);border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,0.1);padding:24px;}
-h1{text-align:center;margin-bottom:24px;color:var(--main);}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.field{display:flex;flex-direction:column;gap:6px;}
-label{font-size:14px;color:var(--muted);}
-input{padding:12px 14px;border-radius:12px;border:1px solid #e5e7eb;font-size:16px;width:100%;}
-input:focus{outline:none;border-color:var(--main);}
-.ratios{grid-column:span 2;display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;flex-direction:column;}
-.ratios .hint{font-size:13px;color:var(--muted);margin-bottom:4px;}
-.ratio-options{display:flex;flex-wrap:wrap;gap:12px;}
-.ratio{flex:1;min-width:120px;}
-.ratio input{display:none;}
-.ratio label{display:block;text-align:center;padding:12px;border-radius:14px;border:1px solid #e5e7eb;cursor:pointer;font-weight:500;}
-.ratio input:checked + label{background:var(--main);color:#fff;border-color:var(--main);}
-button{margin-top:20px;width:100%;padding:14px;border:none;border-radius:14px;background:var(--main);color:#fff;font-size:18px;cursor:pointer;}
-.results{margin-top:24px;background:var(--bg);border-radius:16px;padding:16px;display:none;gap:10px;opacity:0;transition:opacity 0.6s;}
-.result{display:flex;justify-content:space-between;font-size:15px;flex-wrap:wrap;}
-.alert{margin-top:16px;background:#fee2e2;color:var(--danger);padding:12px;border-radius:12px;font-weight:500;display:none;}
-.note{margin-top:24px;font-size:13px;color:var(--muted);text-align:center;}
-.bar-container{width:100%;height:18px;background:#e5e7eb;border-radius:12px;margin-top:12px;overflow:hidden;}
-.bar-fill{height:100%;width:0%;background:green;border-radius:12px;transition:width 0.6s, background 0.6s;}
-@media(max-width:600px){.grid{grid-template-columns:1fr;gap:12px;}.ratio-options{flex-direction:column;gap:8px;}.container{padding:16px;}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حاسبة التمويل</title>
+  <style>
+    :root {
+      --main: #0f766e;
+      --bg: #f0fdfa;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --danger: #dc2626;
+    }
+
+    * { box-sizing: border-box; font-family: "Tajawal", system-ui, sans-serif; }
+    body { margin:0; background:linear-gradient(135deg,#ccfbf1,#f0fdfa); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; color:var(--text); }
+    .container { width:100%; max-width:720px; background:var(--card); border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.1); padding:24px; }
+    h1 { text-align:center; margin-bottom:24px; color:var(--main); }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    label { font-size:14px; color:var(--muted); }
+    input { padding:12px 14px; border-radius:12px; border:1px solid #e5e7eb; font-size:16px; width:100%; }
+    input:focus { outline:none; border-color:var(--main); }
+    .ratios { grid-column:span 2; display:flex; flex-wrap:wrap; gap:12px; margin-top:8px; flex-direction:column; }
+    .ratios .hint { font-size:13px; color:var(--muted); margin-bottom:4px; }
+    .ratio-options { display:flex; flex-wrap:wrap; gap:12px; }
+    .ratio { flex:1; min-width:120px; }
+    .ratio input { display:none; }
+    .ratio label { display:block; text-align:center; padding:12px; border-radius:14px; border:1px solid #e5e7eb; cursor:pointer; font-weight:500; }
+    .ratio input:checked + label { background:var(--main); color:#fff; border-color:var(--main); }
+    button { margin-top:20px; width:100%; padding:14px; border:none; border-radius:14px; background:var(--main); color:#fff; font-size:18px; cursor:pointer; }
+    .results { margin-top:24px; background:var(--bg); border-radius:16px; padding:16px; display:none; gap:10px; }
+    .result { display:flex; justify-content:space-between; font-size:15px; flex-wrap:wrap; }
+    .alert { margin-top:16px; background:#fee2e2; color:var(--danger); padding:12px; border-radius:12px; font-weight:500; display:none; }
+    .note { margin-top:24px; font-size:13px; color:var(--muted); text-align:center; }
+
+    @media(max-width:600px){
+      .grid { grid-template-columns:1fr; gap:12px; }
+      .ratio-options { flex-direction:column; gap:8px; }
+      .container { padding:16px; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>حاسبة التمويل</h1>
-<div class="grid">
-  <div class="field"><label>الراتب الشهري</label><input id="salary" type="number" min="0" placeholder="مثال: 8000" /></div>
-  <div class="field"><label>الأقساط الحالية</label><input id="commitments" type="number" min="0" placeholder="مثال: 1500" /></div>
-  <div class="ratios">
-    <div class="hint">اختر نسبة الاستقطاع المناسبة لك</div>
-    <div class="ratio-options">
-      <div class="ratio"><input type="radio" name="ratio" value="0.25" id="r25"><label for="r25">25٪</label></div>
-      <div class="ratio"><input type="radio" name="ratio" value="0.33" id="r33" checked><label for="r33">33٪</label></div>
-      <div class="ratio"><input type="radio" name="ratio" value="0.55" id="r55"><label for="r55">55٪</label></div>
-      <div class="ratio"><input type="radio" name="ratio" value="0.65" id="r65"><label for="r65">65٪</label></div>
+  <div class="container">
+    <h1>حاسبة التمويل</h1>
+    <div class="grid">
+      <div class="field"><label>الراتب الشهري</label><input id="salary" type="number" min="0" placeholder="مثال: 8000" /></div>
+      <div class="field"><label>الأقساط الحالية</label><input id="commitments" type="number" min="0" placeholder="مثال: 1500" /></div>
+      <div class="ratios">
+        <div class="hint">اختر نسبة الاستقطاع المناسبة لك</div>
+        <div class="ratio-options">
+          <div class="ratio"><input type="radio" name="ratio" value="0.25" id="r25"><label for="r25">25٪</label></div>
+          <div class="ratio"><input type="radio" name="ratio" value="0.33" id="r33" checked><label for="r33">33٪</label></div>
+          <div class="ratio"><input type="radio" name="ratio" value="0.55" id="r55"><label for="r55">55٪</label></div>
+          <div class="ratio"><input type="radio" name="ratio" value="0.65" id="r65"><label for="r65">65٪</label></div>
+        </div>
+      </div>
+      <div class="field"><label>نسبة ربح البنك (%)</label><input id="rate" type="number" min="0" step="0.01" placeholder="مثال: 4.5" /></div>
+      <div class="field"><label>مبلغ التمويل المطلوب</label><input id="amount" type="number" min="0" placeholder="مثال: 100000" /></div>
+      <div class="field"><label>مدة التمويل (بالسنوات)</label><input id="years" type="number" min="1" placeholder="مثال: 5" /></div>
     </div>
+    <button onclick="calculate()">احسب</button>
+    <div class="alert" id="alert"></div>
+    <div class="results" id="results">
+      <div class="result"><span>مبلغ التمويل الصافي (قبل الأرباح):</span><strong id="netAmount"></strong></div>
+      <div class="result"><span>مبلغ ربح التمويل:</span><strong id="profitAmount"></strong></div>
+      <div class="result"><span>القسط الشهري:</span><strong id="monthly"></strong></div>
+      <div class="result"><span>إجمالي مبلغ التمويل مع الأرباح:</span><strong id="total"></strong></div>
+      <div class="result"><span>أعلى مبلغ تمويل ممكن (صافي قبل الأرباح):</span><strong id="maxAmount"></strong></div>
+      <div class="result"><span>أعلى مبلغ تمويل مسموح به شامل الأرباح:</span><strong id="maxTotalWithProfit"></strong></div>
+      <div class="result"><span>قسط أعلى مبلغ ممكن:</span><strong id="maxMonthly"></strong></div>
+    </div>
+    <div class="note">تنويه: هذه الحسبة تقديرية وتحتمل الصواب والخطأ، وقد تختلف القيم الفعلية حسب شروط جهة التمويل.</div>
   </div>
-  <div class="field"><label>نسبة ربح البنك (%)</label><input id="rate" type="number" min="0" step="0.01" placeholder="مثال: 4.5" /></div>
-  <div class="field"><label>مبلغ التمويل المطلوب</label><input id="amount" type="number" min="0" placeholder="مثال: 100000" /></div>
-  <div class="field"><label>مدة التمويل (بالسنوات)</label><input id="years" type="number" min="1" placeholder="مثال: 5" /></div>
-</div>
-<button onclick="calculate()">احسب</button>
-<div class="alert" id="alert"></div>
-<div class="results" id="results">
-  <div class="result"><span>مبلغ التمويل الصافي (قبل الأرباح):</span><strong id="netAmount"></strong></div>
-  <div class="result"><span>مبلغ ربح التمويل:</span><strong id="profitAmount"></strong></div>
-  <div class="result"><span>القسط الشهري:</span><strong id="monthly"></strong></div>
-  <div class="result"><span>إجمالي مبلغ التمويل مع الأرباح:</span><strong id="total"></strong></div>
-  <div class="result"><span>أعلى مبلغ تمويل ممكن (صافي قبل الأرباح):</span><strong id="maxAmount"></strong></div>
-  <div class="result"><span>أعلى مبلغ تمويل مسموح به شامل الأرباح:</span><strong id="maxTotalWithProfit"></strong></div>
-  <div class="result"><span>قسط أعلى مبلغ ممكن:</span><strong id="maxMonthly"></strong></div>
-  <div class="bar-container"><div class="bar-fill" id="installmentBar"></div></div>
-</div>
-<div class="note">تنويه: هذه الحسبة تقديرية وتحتمل الصواب والخطأ، وقد تختلف القيم الفعلية حسب شروط جهة التمويل.</div>
-</div>
-<script>
-function format(num){ return num.toLocaleString('ar-SA',{maximumFractionDigits:2})+' ريال'; }
-function calculate(){
-  const salary=Number(salaryInput.value);
-  const commitments=Number(commitmentsInput.value);
-  const rate=Number(rateInput.value)/100;
-  let amount=Number(amountInput.value);
-  const years=Number(yearsInput.value);
-  const ratio=Number(document.querySelector('input[name="ratio"]:checked').value);
-  alertBox.style.display='none';
-  if(!salary||!rate||!years) return;
-  const months=years*12;
-  const maxDeduction=salary*ratio;
-  const availableInstallment=maxDeduction-commitments;
-  if(availableInstallment<=0){ alertBox.textContent='لا يوجد قسط متاح للتمويل حسب البيانات المدخلة'; alertBox.style.display='block'; return; }
-  const maxAmount=(availableInstallment*months)/(1+rate*years);
-  if(amount>maxAmount){ alertBox.textContent='⚠️ تم تعديل مبلغ التمويل ليكون ضمن الحد المسموح'; alertBox.style.display='block'; amount=maxAmount; }
-  const totalProfit=amount*rate*years;
-  const totalAmount=amount+totalProfit;
-  const monthly=totalAmount/months;
-  const netAmount=amount;
-  const maxTotalWithProfit=maxAmount*(1+rate*years);
-  const maxMonthly=availableInstallment;
-
-  // تحديث النتائج مع تأثير Fade In
-  netAmountEl.textContent=format(netAmount);
-  profitAmountEl.textContent=format(totalProfit);
-  monthlyEl.textContent=format(monthly);
-  totalEl.textContent=format(totalAmount);
-  maxAmountEl.textContent=format(maxAmount);
-  maxTotalWithProfitEl.textContent=format(maxTotalWithProfit);
-  maxMonthlyEl.textContent=format(maxMonthly);
-  resultsBox.style.display='grid';
-  setTimeout(()=>{resultsBox.style.opacity=1;},50);
-
-  // تحديث شريط القسط
-  let ratioPercent=Math.min((monthly/salary)*100,100);
-  let color='green';
-  if(ratioPercent>50) color='red';
-  else if(ratioPercent>30) color='orange';
-  barFill.style.width=ratioPercent+'%';
-  barFill.style.background=color;
-}
-
-const salaryInput=document.getElementById('salary');
-const commitmentsInput=document.getElementById('commitments');
-const rateInput=document.getElementById('rate');
-const amountInput=document.getElementById('amount');
-const yearsInput=document.getElementById('years');
-const alertBox=document.getElementById('alert');
-const resultsBox=document.getElementById('results');
-const netAmountEl=document.getElementById('netAmount');
-const profitAmountEl=document.getElementById('profitAmount');
-const monthlyEl=document.getElementById('monthly');
-const totalEl=document.getElementById('total');
-const maxAmountEl=document.getElementById('maxAmount');
-const maxTotalWithProfitEl=document.getElementById('maxTotalWithProfit');
-const maxMonthlyEl=document.getElementById('maxMonthly');
-const barFill=document.getElementById('installmentBar');
-</script>
+  <script>
+    function format(num){ return num.toLocaleString('ar-SA',{maximumFractionDigits:2})+' ريال'; }
+    function calculate(){
+      const salary=Number(salaryInput.value);
+      const commitments=Number(commitmentsInput.value);
+      const rate=Number(rateInput.value)/100;
+      let amount=Number(amountInput.value);
+      const years=Number(yearsInput.value);
+      const ratio=Number(document.querySelector('input[name="ratio"]:checked').value);
+      alertBox.style.display='none';
+      if(!salary||!rate||!years) return;
+      const months=years*12;
+      const maxDeduction=salary*ratio;
+      const availableInstallment=maxDeduction-commitments;
+      if(availableInstallment<=0){ alertBox.textContent='لا يوجد قسط متاح للتمويل حسب البيانات المدخلة'; alertBox.style.display='block'; return; }
+      const maxAmount=(availableInstallment*months)/(1+rate*years);
+      if(amount>maxAmount){
+        alertBox.textContent='⚠️ تم تعديل مبلغ التمويل ليكون ضمن الحد المسموح';
+        alertBox.style.display='block';
+        amount=maxAmount;
+      }
+      const totalProfit=amount*rate*years;
+      const totalAmount=amount+totalProfit;
+      const monthly=totalAmount/months;
+      const netAmount=amount;
+      const maxTotalWithProfit=maxAmount*(1+rate*years);
+      const maxMonthly=availableInstallment;
+      netAmountEl.textContent=format(netAmount);
+      profitAmountEl.textContent=format(totalProfit);
+      monthlyEl.textContent=format(monthly);
+      totalEl.textContent=format(totalAmount);
+      maxAmountEl.textContent=format(maxAmount);
+      maxTotalWithProfitEl.textContent=format(maxTotalWithProfit);
+      maxMonthlyEl.textContent=format(maxMonthly);
+      resultsBox.style.display='grid';
+    }
+    const salaryInput=document.getElementById('salary');
+    const commitmentsInput=document.getElementById('commitments');
+    const rateInput=document.getElementById('rate');
+    const amountInput=document.getElementById('amount');
+    const yearsInput=document.getElementById('years');
+    const alertBox=document.getElementById('alert');
+    const resultsBox=document.getElementById('results');
+    const netAmountEl=document.getElementById('netAmount');
+    const profitAmountEl=document.getElementById('profitAmount');
+    const monthlyEl=document.getElementById('monthly');
+    const totalEl=document.getElementById('total');
+    const maxAmountEl=document.getElementById('maxAmount');
+    const maxTotalWithProfitEl=document.getElementById('maxTotalWithProfit');
+    const maxMonthlyEl=document.getElementById('maxMonthly');
+  </script>
 </body>
 </html>
