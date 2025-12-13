@@ -205,6 +205,8 @@
     <div class="alert" id="alert"></div>
 
     <div class="results" id="results">
+      <div class="result"><span>مبلغ التمويل الصافي (بعد خصم الأرباح):</span><strong id="netAmount"></strong></div>
+      <div class="result"><span>مبلغ ربح التمويل:</span><strong id="profitAmount"></strong></div>
       <div class="result"><span>القسط الشهري:</span><strong id="monthly"></strong></div>
       <div class="result"><span>إجمالي مبلغ التمويل مع الأرباح:</span><strong id="total"></strong></div>
       <div class="result"><span>أعلى مبلغ تمويل ممكن:</span><strong id="maxAmount"></strong></div>
@@ -246,6 +248,7 @@
       const totalProfit = amount * rate * years;
       const totalAmount = amount + totalProfit;
       const monthly = totalAmount / months;
+      const netAmount = amount; // المبلغ الصافي قبل إضافة الربح
 
       const maxAmount = (availableInstallment * months) / (1 + rate * years);
       const maxMonthly = availableInstallment;
@@ -255,6 +258,8 @@
         alertBox.style.display = 'block';
       }
 
+      netAmountEl.textContent = format(netAmount);
+      profitAmountEl.textContent = format(totalProfit);
       monthlyEl.textContent = format(monthly);
       totalEl.textContent = format(totalAmount);
       maxAmountEl.textContent = format(maxAmount);
@@ -271,6 +276,8 @@
 
     const alertBox = document.getElementById('alert');
     const resultsBox = document.getElementById('results');
+    const netAmountEl = document.getElementById('netAmount');
+    const profitAmountEl = document.getElementById('profitAmount');
     const monthlyEl = document.getElementById('monthly');
     const totalEl = document.getElementById('total');
     const maxAmountEl = document.getElementById('maxAmount');
