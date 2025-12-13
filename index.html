@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حاسبة التمويل</title>
+<!-- استخدام النسخة الكلاسيكية من jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {--main:#0f766e;--bg:#f0fdfa;--card:#fff;--text:#0f172a;--muted:#64748b;--danger:#dc2626;}
@@ -60,7 +61,7 @@ button{margin-top:20px;width:100%;padding:14px;border:none;border-radius:14px;ba
 <div class="result"><span>أعلى مبلغ تمويل مسموح به شامل الأرباح:</span><strong id="maxTotalWithProfit"></strong></div>
 <div class="result"><span>قسط أعلى مبلغ ممكن:</span><strong id="maxMonthly"></strong></div>
 </div>
-<button onclick="downloadPDF()">تحميل النتائج كملف PDF</button>
+<button id="pdfBtn">تحميل النتائج كملف PDF</button>
 <div class="note">تنويه: هذه الحسبة تقديرية وتحتمل الصواب والخطأ، وقد تختلف القيم الفعلية حسب شروط جهة التمويل.</div>
 </div>
 <script>
@@ -73,7 +74,7 @@ let amount=Number(amountInput.value);
 const years=Number(yearsInput.value);
 const ratio=Number(document.querySelector('input[name="ratio"]:checked').value);
 alertBox.style.display='none';
-if(!salary||!rate||!years) return;
+if(!salary||!rate||!years) {resultsBox.style.display='none'; return;}
 const months=years*12;
 const maxDeduction=salary*ratio;
 const availableInstallment=maxDeduction-commitments;
@@ -96,8 +97,7 @@ maxMonthlyEl.textContent=format(maxMonthly);
 resultsBox.style.display='grid';
 }
 function downloadPDF(){
-const {{ jsPDF }} = window.jspdf;
-const doc = new jsPDF({orientation:'portrait'});
+const doc = new jsPDF();
 const today = new Date().toLocaleDateString('ar-SA');
 doc.setFontSize(18);
 doc.text('تقرير التمويل',105,20,{align:'center'});
@@ -130,6 +130,7 @@ const maxAmountEl=document.getElementById('maxAmount');
 const maxTotalWithProfitEl=document.getElementById('maxTotalWithProfit');
 const maxMonthlyEl=document.getElementById('maxMonthly');
 [salaryInput,commitmentsInput,rateInput,amountInput,yearsInput].forEach(el=>el.addEventListener('input',calculate));
+document.getElementById('pdfBtn').addEventListener('click',downloadPDF);
 </script>
 </body>
 </html>
