@@ -80,6 +80,19 @@
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 8px;
+      flex-direction: column;
+    }
+
+    .ratios .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .ratio-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .ratio {
@@ -156,8 +169,8 @@
         grid-template-columns: 1fr;
       }
 
-      .ratios {
-        grid-column: span 1;
+      .ratio-options {
+        flex-direction: column;
       }
     }
   </style>
@@ -178,10 +191,13 @@
       </div>
 
       <div class="ratios">
-        <div class="ratio"><input type="radio" name="ratio" value="0.25" id="r25"><label for="r25">25٪</label></div>
-        <div class="ratio"><input type="radio" name="ratio" value="0.33" id="r33"><label for="r33">33٪</label></div>
-        <div class="ratio"><input type="radio" name="ratio" value="0.55" id="r55"><label for="r55">55٪</label></div>
-        <div class="ratio"><input type="radio" name="ratio" value="0.65" id="r65" checked><label for="r65">65٪</label></div>
+        <div class="hint">اختر نسبة الاستقطاع المناسبة لك</div>
+        <div class="ratio-options">
+          <div class="ratio"><input type="radio" name="ratio" value="0.25" id="r25"><label for="r25">25٪</label></div>
+          <div class="ratio"><input type="radio" name="ratio" value="0.33" id="r33"><label for="r33">33٪</label></div>
+          <div class="ratio"><input type="radio" name="ratio" value="0.55" id="r55"><label for="r55">55٪</label></div>
+          <div class="ratio"><input type="radio" name="ratio" value="0.65" id="r65" checked><label for="r65">65٪</label></div>
+        </div>
       </div>
 
       <div class="field">
@@ -205,11 +221,12 @@
     <div class="alert" id="alert"></div>
 
     <div class="results" id="results">
-      <div class="result"><span>مبلغ التمويل الصافي (بعد خصم الأرباح):</span><strong id="netAmount"></strong></div>
+      <div class="result"><span>مبلغ التمويل الصافي (قبل الأرباح):</span><strong id="netAmount"></strong></div>
       <div class="result"><span>مبلغ ربح التمويل:</span><strong id="profitAmount"></strong></div>
       <div class="result"><span>القسط الشهري:</span><strong id="monthly"></strong></div>
       <div class="result"><span>إجمالي مبلغ التمويل مع الأرباح:</span><strong id="total"></strong></div>
-      <div class="result"><span>أعلى مبلغ تمويل ممكن:</span><strong id="maxAmount"></strong></div>
+      <div class="result"><span>أعلى مبلغ تمويل ممكن (صافي قبل الأرباح):</span><strong id="maxAmount"></strong></div>
+      <div class="result"><span>أعلى مبلغ تمويل ممكن شامل الأرباح:</span><strong id="maxTotalWithProfit"></strong></div>
       <div class="result"><span>قسط أعلى مبلغ ممكن:</span><strong id="maxMonthly"></strong></div>
     </div>
 
@@ -248,9 +265,10 @@
       const totalProfit = amount * rate * years;
       const totalAmount = amount + totalProfit;
       const monthly = totalAmount / months;
-      const netAmount = amount; // المبلغ الصافي قبل إضافة الربح
+      const netAmount = amount;
 
       const maxAmount = (availableInstallment * months) / (1 + rate * years);
+      const maxTotalWithProfit = maxAmount * (1 + rate * years);
       const maxMonthly = availableInstallment;
 
       if (amount > maxAmount) {
@@ -263,6 +281,7 @@
       monthlyEl.textContent = format(monthly);
       totalEl.textContent = format(totalAmount);
       maxAmountEl.textContent = format(maxAmount);
+      maxTotalWithProfitEl.textContent = format(maxTotalWithProfit);
       maxMonthlyEl.textContent = format(maxMonthly);
 
       resultsBox.style.display = 'grid';
@@ -281,6 +300,7 @@
     const monthlyEl = document.getElementById('monthly');
     const totalEl = document.getElementById('total');
     const maxAmountEl = document.getElementById('maxAmount');
+    const maxTotalWithProfitEl = document.getElementById('maxTotalWithProfit');
     const maxMonthlyEl = document.getElementById('maxMonthly');
   </script>
 </body>
